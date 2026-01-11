@@ -1,0 +1,68 @@
+<resources>
+    <string name="app_name">Projekt Testowanie</string>
+
+    <string name="btn_add_person">Add person</string>
+    <string name="btn_list_persons">Show list</string>
+    <string name="btn_delete_person">Delete person</string>
+    <string name="btn_about">About</string>
+    <string name="btn_save">Save</string>
+
+    <string name="nav_add">Add</string>
+    <string name="nav_list">List</string>
+    <string name="nav_delete">Delete</string>
+    <string name="nav_info">Info</string>
+
+    <string name="btn_language_to_en">EN</string>
+    <string name="btn_language_to_pl">PL</string>
+
+    <string name="title_add_person">Add person</string>
+    <string name="title_list_persons">People list</string>
+    <string name="title_delete_person">Delete person</string>
+    <string name="title_about">About</string>
+
+    <string name="hint_first_name">First name</string>
+    <string name="hint_last_name">Last name</string>
+    <string name="hint_birth_date_optional">Birth date (DD-MM-YYYY)</string>
+    <string name="hint_phone_optional">Phone</string>
+    <string name="hint_email_optional">Email</string>
+    <string name="hint_city_optional">City</string>
+    <string name="hint_postal_code_optional">Postal code</string>
+    <string name="hint_street_optional">Street</string>
+    <string name="hint_house_number_optional">House number</string>
+    <string name="hint_apartment_number_optional">Apartment number (optional)</string>
+    <string name="hint_search_delete">Search a person to delete</string>
+
+    <string name="error_first_name_required">Enter first name</string>
+    <string name="error_last_name_required">Enter last name</string>
+    <string name="error_birth_date_invalid">Invalid date (use DD-MM-YYYY)</string>
+    <string name="error_birth_date_future">Date cannot be in the future</string>
+    <string name="error_email_invalid">Invalid email address</string>
+    <string name="error_phone_invalid">Phone number must have 9 digits</string>
+    <string name="error_postal_invalid">Postal code must be 12-345</string>
+    <string name="error_house_number_invalid">Invalid house number</string>
+
+    <string name="error_city_required">Enter city</string>
+    <string name="error_street_required">Enter street</string>
+
+    <string name="dialog_delete_title">Delete person</string>
+    <string name="dialog_delete_message">Are you sure you want to delete:\n%1$s %2$s?</string>
+    <string name="dialog_delete_positive">Delete</string>
+    <string name="dialog_delete_negative">Cancel</string>
+
+    <string name="toast_fix_errors">Fix highlighted fields</string>
+    <string name="toast_person_added">Added: %1$s %2$s</string>
+    <string name="toast_save_error">Save error</string>
+    <string name="toast_person_deleted">Deleted: %1$s %2$s</string>
+    <string name="toast_delete_error">Could not delete record</string>
+
+    <string name="value_not_provided">N/A</string>
+    <string name="person_details_template">Birth date: %1$s\nPhone: %2$s\nEmail: %3$s\nAddress: %4$s</string>
+
+    <string name="privacy_policy_title">Privacy policy</string>
+    <string name="open_source_licenses_title">Open-source licenses</string>
+
+    <string name="privacy_policy_text">The app stores entered data locally only (SQLite database on the device).\n\nNo data is sent over the internet or shared with third parties.\n\nTo remove data: delete records in the app or uninstall the app (which removes the local database).</string>
+
+    <string name="open_source_licenses_text">The app is built using the Android SDK and the AndroidX and Material Components libraries (Google), which are used to create the user interface and handle data lists. Data is stored locally using the built-in SQLite mechanism (SQLiteOpenHelper / SQLiteDatabase). \n\nDuring testing, the LeakCanary library (Square) was used to detect memory leaks. \n\nAndroidX, Material Components, and LeakCanary are open-source projects. Licensing information: Apache License 2.0 – https://www.apache.org/licenses/LICENSE-2.0</string>
+
+</resources>

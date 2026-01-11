@@ -1,16 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/nav_add"
-        android:title="Dodaj osobę"
+        android:title="@string/nav_add"
         android:icon="@android:drawable/ic_input_add" />
 
     <item
         android:id="@+id/nav_list"
-        android:title="Lista danych"
+        android:title="@string/nav_list"
         android:icon="@android:drawable/ic_menu_agenda" />
 
     <item
         android:id="@+id/nav_delete"
-        android:title="Usuń osobę"
+        android:title="@string/nav_delete"
         android:icon="@android:drawable/ic_menu_delete" />
 </menu>

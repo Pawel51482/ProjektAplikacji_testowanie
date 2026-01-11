@@ -25,8 +25,18 @@ class PersonDeleteAdapter(
     override fun onBindViewHolder(holder: PersonDeleteViewHolder, position: Int) {
         val p = items[position]
         holder.binding.tvName.text = "${p.firstName} ${p.lastName}"
-        holder.binding.tvDetails.text =
-            "Data ur.: ${p.birthDate}\nTel: ${p.phone}\nE-mail: ${p.email}\nAdres: ${p.address}"
+
+        val ctx = holder.itemView.context
+        fun valueOrNA(v: String): String =
+            if (v.isBlank()) ctx.getString(R.string.value_not_provided) else v
+
+        holder.binding.tvDetails.text = ctx.getString(
+            R.string.person_details_template,
+            valueOrNA(p.birthDate),
+            valueOrNA(p.phone),
+            valueOrNA(p.email),
+            valueOrNA(p.address)
+        )
 
         holder.binding.root.setOnClickListener {
             onItemClick(p)

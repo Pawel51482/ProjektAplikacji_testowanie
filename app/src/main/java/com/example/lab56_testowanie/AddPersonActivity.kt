@@ -2,13 +2,16 @@ package com.example.lab56_testowanie
 
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Patterns
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.lab56_testowanie.databinding.ActivityAddPersonBinding
+import java.text.SimpleDateFormat
 import java.util.Calendar
-import android.util.Patterns
+import java.util.Locale
 
-// Pierwsza litera duża
 private fun String.capitalizeFirstLetter(): String {
     if (this.isEmpty()) return this
     return this.lowercase().replaceFirstChar { it.uppercase() }
@@ -18,95 +21,91 @@ class AddPersonActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityAddPersonBinding
     private lateinit var dbHelper: PersonDbHelper
+
     private var isUpdatingPhone = false
-    private var isUpdatingPostal = false
+    private var phoneWatcher: TextWatcher? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // jeśli używasz przełączania języka, dobrze to mieć:
+        LanguageManager.applySavedLanguage(this)
+
         super.onCreate(savedInstanceState)
         binding = ActivityAddPersonBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Format telefonu 123 456 789 oraz max 9 cyfr
-        binding.etPhone.addTextChangedListener(object : android.text.TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = getString(R.string.title_add_person)
 
+        dbHelper = PersonDbHelper(applicationContext)
+
+        phoneWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-            override fun afterTextChanged(s: android.text.Editable?) {
+            override fun afterTextChanged(s: Editable?) {
                 if (isUpdatingPhone) return
-
-                val digits = s.toString().filter { it.isDigit() }
-                val limited = digits.take(9) //max 9 cyfr
-
-                val formatted = StringBuilder()
-                for (i in limited.indices) {
-                    formatted.append(limited[i])
-                    if (i == 2 || i == 5) {
-                        if (i != limited.lastIndex) {
-                            formatted.append(' ')
-                        }
+                val digits = s?.toString().orEmpty().filter { it.isDigit() }.take(9)
+                val formatted = buildString {
+                    digits.forEachIndexed { index, c ->
+                        append(c)
+                        if ((index == 2 || index == 5) && index != digits.lastIndex) append(' ')
                     }
                 }
-
                 isUpdatingPhone = true
-                binding.etPhone.setText(formatted.toString())
-                binding.etPhone.setSelection(binding.etPhone.text.length)
+                binding.etPhone.setText(formatted)
+                binding.etPhone.setSelection(formatted.length)
                 isUpdatingPhone = false
             }
-        })
-
-        // format kodu pocztowego 12-345 oraz max 5 cyfr
-        binding.etPostalCode.addTextChangedListener(object : android.text.TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
-            override fun afterTextChanged(s: android.text.Editable?) {
-                if (isUpdatingPostal) return
-
-                val digits = s.toString().filter { it.isDigit() }
-                val limited = digits.take(5)  // max 5 cyfr
-
-                val formatted = StringBuilder()
-                for (i in limited.indices) {
-                    formatted.append(limited[i])
-                    if (i == 1 && limited.length > 2) {
-                        formatted.append('-')   // po 2 cyfrze
-                    }
-                }
-
-                isUpdatingPostal = true
-                binding.etPostalCode.setText(formatted.toString())
-                binding.etPostalCode.setSelection(binding.etPostalCode.text.length)
-                isUpdatingPostal = false
-            }
-        })
-
-        dbHelper = PersonDbHelper(this)
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Dodaj osobę"
-
-        binding.etBirthDate.setOnClickListener {
-            showDatePicker()
         }
+        binding.etPhone.addTextChangedListener(phoneWatcher)
 
-        binding.btnSave.setOnClickListener {
-            savePerson()
-        }
+        binding.etBirthDate.setOnClickListener { showDatePicker() }
+        binding.btnSave.setOnClickListener { savePerson() }
     }
 
     private fun showDatePicker() {
         val c = Calendar.getInstance()
-        val year = c.get(Calendar.YEAR)
-        val month = c.get(Calendar.MONTH)
-        val day = c.get(Calendar.DAY_OF_MONTH)
+        val dialog = DatePickerDialog(
+            this,
+            { _, y, m, d ->
+                val dd = d.toString().padStart(2, '0')
+                val mm = (m + 1).toString().padStart(2, '0')
+                binding.etBirthDate.setText("$dd-$mm-$y")
+            },
+            c.get(Calendar.YEAR),
+            c.get(Calendar.MONTH),
+            c.get(Calendar.DAY_OF_MONTH)
+        )
 
-        DatePickerDialog(this, { _, y, m, d ->
-            val dd = d.toString().padStart(2, '0')
-            val mm = (m + 1).toString().padStart(2, '0')
-            binding.etBirthDate.setText("$dd-$mm-$y")
-        }, year, month, day).show()
+        // blokada przyszłej daty
+        dialog.datePicker.maxDate = System.currentTimeMillis()
+        dialog.show()
+    }
+
+    private fun validateBirthDateRequired(value: String): Pair<Boolean, String?> {
+        if (value.isBlank()) return false to getString(R.string.error_birth_date_invalid)
+
+        val fmt = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault())
+        fmt.isLenient = false
+
+        val parsed = try {
+            fmt.parse(value)
+        } catch (_: Exception) {
+            return false to getString(R.string.error_birth_date_invalid)
+        } ?: return false to getString(R.string.error_birth_date_invalid)
+
+        val today = Calendar.getInstance().apply {
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }.time
+
+        return if (parsed.after(today)) {
+            false to getString(R.string.error_birth_date_future)
+        } else {
+            true to null
+        }
     }
 
     private fun savePerson() {
@@ -120,6 +119,7 @@ class AddPersonActivity : AppCompatActivity() {
         val postalCode = binding.etPostalCode.text.toString().trim()
         val street = binding.etStreet.text.toString().trim().capitalizeFirstLetter()
         val houseNumber = binding.etHouseNumber.text.toString().trim()
+        val apartmentNumber = binding.etApartmentNumber.text.toString().trim()
 
         // Czyścimy stare błędy
         binding.etFirstName.error = null
@@ -131,77 +131,74 @@ class AddPersonActivity : AppCompatActivity() {
         binding.etPostalCode.error = null
         binding.etStreet.error = null
         binding.etHouseNumber.error = null
+        binding.etApartmentNumber.error = null
 
         var isValid = true
 
         // Wymagane pola
         if (firstName.isEmpty()) {
-            binding.etFirstName.error = "Podaj imię"
+            binding.etFirstName.error = getString(R.string.error_first_name_required)
             isValid = false
         }
         if (lastName.isEmpty()) {
-            binding.etLastName.error = "Podaj nazwisko"
-            isValid = false
-        }
-        if (birthDate.isEmpty()) {
-            binding.etBirthDate.error = "Podaj datę urodzenia"
+            binding.etLastName.error = getString(R.string.error_last_name_required)
             isValid = false
         }
 
-        // Email
-        if (email.isEmpty()) {
-            binding.etEmail.error = "Podaj adres e-mail"
-            isValid = false
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            binding.etEmail.error = "Nieprawidłowy adres e-mail"
+        val (birthOk, birthErr) = validateBirthDateRequired(birthDate)
+        if (!birthOk) {
+            binding.etBirthDate.error = birthErr
             isValid = false
         }
 
         // Telefon
-        var formattedPhone = phoneInput
         val digitsOnly = phoneInput.replace(" ", "")
-
         if (digitsOnly.length != 9 || !digitsOnly.all { it.isDigit() }) {
-            binding.etPhone.error = "Telefon musi mieć 9 cyfr"
+            binding.etPhone.error = getString(R.string.error_phone_invalid)
             isValid = false
-        } else {
-            formattedPhone = "${digitsOnly.substring(0, 3)} " +
-                    "${digitsOnly.substring(3, 6)} " +
-                    digitsOnly.substring(6, 9)
-            binding.etPhone.setText(formattedPhone)
+        }
+
+        // email (wymagany i poprawny)
+        if (email.isEmpty() || !Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            binding.etEmail.error = getString(R.string.error_email_invalid)
+            isValid = false
         }
 
         // Adres
         val postalRegex = Regex("\\d{2}-\\d{3}")
-        val houseRegex = Regex("\\d+[A-Za-z]?")
+        val numberRegex = Regex("\\d+[A-Za-z]?")
 
         if (city.isEmpty()) {
-            binding.etCity.error = "Podaj miasto"
+            binding.etCity.error = getString(R.string.error_city_required)
             isValid = false
         }
-
         if (!postalRegex.matches(postalCode)) {
-            binding.etPostalCode.error = "Kod w formacie 12-345"
+            binding.etPostalCode.error = getString(R.string.error_postal_invalid)
             isValid = false
         }
-
         if (street.isEmpty()) {
-            binding.etStreet.error = "Podaj ulicę"
+            binding.etStreet.error = getString(R.string.error_street_required)
+            isValid = false
+        }
+        if (!numberRegex.matches(houseNumber)) {
+            binding.etHouseNumber.error = getString(R.string.error_house_number_invalid)
             isValid = false
         }
 
-        if (!houseRegex.matches(houseNumber)) {
-            binding.etHouseNumber.error = "Nieprawidłowy numer domu"
+        // numer lokalu (opcjonalny)
+        if (apartmentNumber.isNotEmpty() && !numberRegex.matches(apartmentNumber)) {
+            binding.etApartmentNumber.error = getString(R.string.error_house_number_invalid)
             isValid = false
         }
 
         if (!isValid) {
-            Toast.makeText(this, "Popraw zaznaczone pola", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_fix_errors), Toast.LENGTH_SHORT).show()
             return
         }
 
-        // pełny adres do bazy
-        val fullAddress = "$city $postalCode $street $houseNumber"
+        val formattedPhone = "${digitsOnly.substring(0, 3)} ${digitsOnly.substring(3, 6)} ${digitsOnly.substring(6, 9)}"
+        val flat = if (apartmentNumber.isBlank()) "" else "/$apartmentNumber"
+        val fullAddress = "$street $houseNumber$flat, $postalCode $city"
 
         val person = Person(
             firstName = firstName,
@@ -214,11 +211,21 @@ class AddPersonActivity : AppCompatActivity() {
 
         val id = dbHelper.insertPerson(person)
         if (id > 0) {
-            Toast.makeText(this, "Dodano $firstName $lastName", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                this,
+                getString(R.string.toast_person_added, firstName, lastName),
+                Toast.LENGTH_SHORT
+            ).show()
             finish()
         } else {
-            Toast.makeText(this, "Błąd zapisu", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_save_error), Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onDestroy() {
+        phoneWatcher?.let { binding.etPhone.removeTextChangedListener(it) }
+        phoneWatcher = null
+        super.onDestroy()
     }
 
     override fun onSupportNavigateUp(): Boolean {

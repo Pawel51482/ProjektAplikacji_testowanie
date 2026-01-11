@@ -13,9 +13,12 @@ class DeletePersonActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityDeletePersonBinding
     private lateinit var dbHelper: PersonDbHelper
-
     private lateinit var adapter: PersonDeleteAdapter
-    private var allPersons: MutableList<Person> = mutableListOf()
+
+    private val allPersons: MutableList<Person> = mutableListOf()
+
+    private var searchWatcher: TextWatcher? = null
+    private var confirmDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,12 +26,11 @@ class DeletePersonActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Usuń osobę"
+        supportActionBar?.title = getString(R.string.title_delete_person)
 
-        dbHelper = PersonDbHelper(this)
+        dbHelper = PersonDbHelper(applicationContext)
 
-        // Wczytujemy wszystkie osoby z bazy
-        allPersons = dbHelper.getAllPersons().toMutableList()
+        allPersons.addAll(dbHelper.getAllPersons())
 
         adapter = PersonDeleteAdapter(allPersons.toMutableList()) { person ->
             showDeleteDialog(person)
@@ -37,17 +39,17 @@ class DeletePersonActivity : AppCompatActivity() {
         binding.rvDeletePersons.layoutManager = LinearLayoutManager(this)
         binding.rvDeletePersons.adapter = adapter
 
-        // Wyszukiwanie po imieniu, nazwisku, telefonie, mailu, adresie
-        binding.etSearch.addTextChangedListener(object : TextWatcher {
+        searchWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
             override fun afterTextChanged(s: Editable?) {
-                val query = s?.toString()?.trim() ?: ""
+                val query = s?.toString()?.trim().orEmpty()
                 filterList(query)
             }
-        })
+        }
+        binding.etSearch.addTextChangedListener(searchWatcher)
     }
 
     private fun filterList(query: String) {
@@ -62,34 +64,55 @@ class DeletePersonActivity : AppCompatActivity() {
                     person.lastName.lowercase().contains(lower) ||
                     person.phone.lowercase().contains(lower) ||
                     person.email.lowercase().contains(lower) ||
-                    person.address.lowercase().contains(lower)
+                    person.address.lowercase().contains(lower) ||
+                    person.birthDate.lowercase().contains(lower)
         }
+
         adapter.updateData(filtered)
     }
 
     private fun showDeleteDialog(person: Person) {
-        AlertDialog.Builder(this)
-            .setTitle("Usuń osobę")
-            .setMessage("Na pewno chcesz usunąć:\n${person.firstName} ${person.lastName}?")
-            .setPositiveButton("Usuń") { _, _ ->
+        confirmDialog?.dismiss()
+        confirmDialog = AlertDialog.Builder(this)
+            .setTitle(getString(R.string.dialog_delete_title))
+            .setMessage(getString(R.string.dialog_delete_message, person.firstName, person.lastName))
+            .setPositiveButton(getString(R.string.dialog_delete_positive)) { _, _ ->
                 deletePerson(person)
             }
-            .setNegativeButton("Anuluj", null)
-            .show()
+            .setNegativeButton(getString(R.string.dialog_delete_negative), null)
+            .create()
+
+        confirmDialog?.show()
     }
 
     private fun deletePerson(person: Person) {
-        val deleted = dbHelper.deletePersonById(person.id)
-        if (deleted > 0) {
-            Toast.makeText(this, "Usunięto ${person.firstName} ${person.lastName}", Toast.LENGTH_SHORT).show()
-            // Usuwamy z listy
+        val rows = dbHelper.deletePersonById(person.id)
+        if (rows > 0) {
+            Toast.makeText(
+                this,
+                getString(R.string.toast_person_deleted, person.firstName, person.lastName),
+                Toast.LENGTH_SHORT
+            ).show()
+
             allPersons.removeAll { it.id == person.id }
-            // Aktualizujemy adapter po filtrowaniu
+
             val currentQuery = binding.etSearch.text.toString().trim()
             filterList(currentQuery)
         } else {
-            Toast.makeText(this, "Nie udało się usunąć rekordu", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, getString(R.string.toast_delete_error), Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onDestroy() {
+        searchWatcher?.let { binding.etSearch.removeTextChangedListener(it) }
+        searchWatcher = null
+
+        confirmDialog?.dismiss()
+        confirmDialog = null
+
+        binding.rvDeletePersons.adapter = null
+
+        super.onDestroy()
     }
 
     override fun onSupportNavigateUp(): Boolean {

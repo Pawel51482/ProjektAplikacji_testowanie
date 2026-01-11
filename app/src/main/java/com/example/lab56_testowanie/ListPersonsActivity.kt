@@ -16,9 +16,9 @@ class ListPersonsActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Lista osób"
+        supportActionBar?.title = getString(R.string.title_list_persons)
 
-        dbHelper = PersonDbHelper(this)
+        dbHelper = PersonDbHelper(applicationContext)
 
         val list = dbHelper.getAllPersons()
 

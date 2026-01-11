@@ -7,13 +7,29 @@
     android:fitsSystemWindows="true"
     android:paddingTop="?attr/actionBarSize">
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnLanguage"
+        style="@style/Widget.Material3.Button.OutlinedButton"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_margin="12dp"
+        android:minWidth="0dp"
+        android:paddingHorizontal="14dp"
+        android:textAllCaps="false"
+        android:text="@string/btn_language_to_en"
+        app:icon="@drawable/ic_language"
+        app:iconPadding="8dp"
+        app:iconGravity="textStart"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <LinearLayout
         android:id="@+id/buttonsContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingHorizontal="24dp"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnLanguage"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -23,21 +39,29 @@
             android:id="@+id/btnAdd"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dodaj osobę" />
+            android:text="@string/btn_add_person" />
 
         <Button
             android:id="@+id/btnList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Wyświetl listę danych"
+            android:text="@string/btn_list_persons"
             android:layout_marginTop="12dp" />
 
         <Button
             android:id="@+id/btnDelete"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Usuń osobę"
+            android:text="@string/btn_delete_person"
             android:layout_marginTop="12dp" />
+
+        <Button
+            android:id="@+id/btnAbout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_about"
+            android:layout_marginTop="12dp" />
+
     </LinearLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

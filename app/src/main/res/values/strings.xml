@@ -1,3 +1,77 @@
 <resources>
-    <string name="app_name">lab56_testowanie</string>
+    <string name="app_name">Projekt Testowanie</string>
+
+    <!-- Buttons / navigation -->
+    <string name="btn_add_person">Dodaj osobę</string>
+    <string name="btn_list_persons">Wyświetl listę danych</string>
+    <string name="btn_delete_person">Usuń osobę</string>
+    <string name="btn_about">Informacje</string>
+    <string name="btn_save">Zapisz</string>
+
+    <string name="nav_add">Dodaj</string>
+    <string name="nav_list">Lista</string>
+    <string name="nav_delete">Usuń</string>
+    <string name="nav_info">Info</string>
+
+    <string name="btn_language_to_en">EN</string>
+    <string name="btn_language_to_pl">PL</string>
+
+    <!-- Titles -->
+    <string name="title_add_person">Dodaj osobę</string>
+    <string name="title_list_persons">Lista osób</string>
+    <string name="title_delete_person">Usuń osobę</string>
+    <string name="title_about">Informacje</string>
+
+    <!-- Hints -->
+    <string name="hint_first_name">Imię</string>
+    <string name="hint_last_name">Nazwisko</string>
+    <string name="hint_birth_date_optional">Data urodzenia (DD-MM-RRRR)</string>
+    <string name="hint_phone_optional">Telefon</string>
+    <string name="hint_email_optional">E-mail</string>
+    <string name="hint_city_optional">Miasto</string>
+    <string name="hint_postal_code_optional">Kod pocztowy</string>
+    <string name="hint_street_optional">Ulica</string>
+    <string name="hint_house_number_optional">Numer domu</string>
+    <string name="hint_apartment_number_optional">Numer lokalu (opcjonalnie)</string>
+    <string name="hint_search_delete">Wyszukaj osobę do usunięcia</string>
+
+    <!-- Validation -->
+    <string name="error_first_name_required">Podaj imię</string>
+    <string name="error_last_name_required">Podaj nazwisko</string>
+    <string name="error_birth_date_invalid">Nieprawidłowa data (użyj DD-MM-RRRR)</string>
+    <string name="error_birth_date_future">Data nie może być z przyszłości</string>
+    <string name="error_email_invalid">Nieprawidłowy adres e-mail</string>
+    <string name="error_phone_invalid">Telefon musi mieć 9 cyfr</string>
+    <string name="error_postal_invalid">Kod w formacie 12-345</string>
+    <string name="error_house_number_invalid">Nieprawidłowy numer domu</string>
+
+    <!-- Address validation -->
+    <string name="error_city_required">Podaj miasto</string>
+    <string name="error_street_required">Podaj ulicę</string>
+
+    <!-- Dialog -->
+    <string name="dialog_delete_title">Usuń osobę</string>
+    <string name="dialog_delete_message">Na pewno chcesz usunąć:\n%1$s %2$s?</string>
+    <string name="dialog_delete_positive">Usuń</string>
+    <string name="dialog_delete_negative">Anuluj</string>
+
+    <!-- Toasts -->
+    <string name="toast_fix_errors">Popraw zaznaczone pola</string>
+    <string name="toast_person_added">Dodano: %1$s %2$s</string>
+    <string name="toast_save_error">Błąd zapisu</string>
+    <string name="toast_person_deleted">Usunięto: %1$s %2$s</string>
+    <string name="toast_delete_error">Nie udało się usunąć rekordu</string>
+
+    <!-- Display -->
+    <string name="value_not_provided">Brak</string>
+    <string name="person_details_template">Data ur.: %1$s\nTel: %2$s\nE-mail: %3$s\nAdres: %4$s</string>
+
+    <!-- About -->
+    <string name="privacy_policy_title">Polityka prywatności</string>
+    <string name="open_source_licenses_title">Licencje bibliotek</string>
+
+    <string name="privacy_policy_text">Aplikacja przechowuje wprowadzone dane wyłącznie lokalnie (baza SQLite na urządzeniu).\n\nDane nie są wysyłane do internetu ani udostępniane podmiotom trzecim.\n\nUsunięcie danych: możesz skasować rekordy w aplikacji lub odinstalować aplikację (co usuwa lokalną bazę).</string>
+
+    <string name="open_source_licenses_text">Aplikacja została zbudowana w oparciu o Android SDK oraz biblioteki AndroidX i Material Components (Google), wykorzystywane do budowy interfejsu użytkownika i obsługi list danych. Przechowywanie danych realizowane jest lokalnie z użyciem wbudowanego mechanizmu SQLite (SQLiteOpenHelper / SQLiteDatabase). \n\nW procesie testowania użyto biblioteki LeakCanary (Square) do wykrywania wycieków pamięci. \n\nBiblioteki AndroidX, Material Components oraz LeakCanary są projektami open-source. Informacje licencyjne: Apache License 2.0 – https://www.apache.org/licenses/LICENSE-2.0</string>
+
 </resources>

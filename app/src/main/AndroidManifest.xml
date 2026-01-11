@@ -24,6 +24,7 @@
         <activity android:name=".AddPersonActivity" />
         <activity android:name=".ListPersonsActivity" />
         <activity android:name=".DeletePersonActivity" />
+        <activity android:name=".AboutActivity"/>
     </application>
 
 </manifest>

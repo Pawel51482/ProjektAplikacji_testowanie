@@ -15,7 +15,8 @@
             android:id="@+id/etFirstName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Imię"
+            android:hint="@string/hint_first_name"
+            android:inputType="textPersonName"
             android:minHeight="48dp" />
 
         <EditText
@@ -23,7 +24,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Nazwisko"
+            android:hint="@string/hint_last_name"
+            android:inputType="textPersonName"
             android:minHeight="48dp" />
 
         <EditText
@@ -31,9 +33,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:clickable="true"
+            android:hint="@string/hint_birth_date_optional"
             android:focusable="false"
-            android:hint="Data urodzenia"
+            android:clickable="true"
+            android:inputType="none"
             android:minHeight="48dp" />
 
         <EditText
@@ -41,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Telefon"
+            android:hint="@string/hint_phone_optional"
             android:inputType="phone"
             android:minHeight="48dp" />
 
@@ -50,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="E-mail"
+            android:hint="@string/hint_email_optional"
             android:inputType="textEmailAddress"
             android:minHeight="48dp" />
 
@@ -59,7 +62,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Miasto"
+            android:hint="@string/hint_city_optional"
+            android:inputType="textCapWords"
             android:minHeight="48dp" />
 
         <EditText
@@ -67,8 +71,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Kod pocztowy"
-            android:inputType="number"
+            android:hint="@string/hint_postal_code_optional"
+            android:inputType="text"
             android:minHeight="48dp" />
 
         <EditText
@@ -76,7 +80,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Ulica"
+            android:hint="@string/hint_street_optional"
+            android:inputType="textCapWords"
             android:minHeight="48dp" />
 
         <EditText
@@ -84,7 +89,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Numer domu"
+            android:hint="@string/hint_house_number_optional"
+            android:inputType="text"
             android:minHeight="48dp" />
 
         <EditText
@@ -92,14 +98,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Numer lokalu"
+            android:hint="@string/hint_apartment_number_optional"
+            android:inputType="text"
             android:minHeight="48dp" />
 
         <Button
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Dodaj"
+            android:text="@string/btn_save"
             android:layout_marginTop="16dp" />
+
     </LinearLayout>
 </ScrollView>

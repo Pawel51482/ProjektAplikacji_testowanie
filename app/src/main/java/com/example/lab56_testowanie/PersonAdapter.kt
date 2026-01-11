@@ -24,8 +24,18 @@ class PersonAdapter(
     override fun onBindViewHolder(holder: PersonViewHolder, position: Int) {
         val p = items[position]
         holder.binding.tvName.text = "${p.firstName} ${p.lastName}"
-        holder.binding.tvDetails.text =
-            "Data urodzenia: ${p.birthDate}\nTelefon: ${p.phone}\nE-mail: ${p.email}\nAdres: ${p.address}"
+
+        val ctx = holder.itemView.context
+        fun valueOrNA(v: String): String =
+            if (v.isBlank()) ctx.getString(R.string.value_not_provided) else v
+
+        holder.binding.tvDetails.text = ctx.getString(
+            R.string.person_details_template,
+            valueOrNA(p.birthDate),
+            valueOrNA(p.phone),
+            valueOrNA(p.email),
+            valueOrNA(p.address)
+        )
     }
 
     override fun getItemCount(): Int = items.size
